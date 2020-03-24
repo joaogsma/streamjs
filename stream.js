@@ -2,6 +2,9 @@ class Stream {
   _srcIterable;
 
   constructor(iterable) {
+    if (!iterable[Symbol.iterator] instanceof Function) {
+      throw new TypeError("Non-iterable object");
+    }
     this._srcIterable = iterable;
   }
 
