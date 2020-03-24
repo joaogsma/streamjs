@@ -1,12 +1,13 @@
 class Stream {
-  srcIterable;
+  _srcIterable;
 
   constructor(iterable) {
-    this.srcIterable = iterable;
+    this._srcIterable = iterable;
+    Object.freeze(this);
   }
 
   *[Symbol.iterator]() {
-    yield* this.srcIterable;
+    yield* this._srcIterable;
   }
 
   map(func) {
@@ -35,6 +36,22 @@ class Stream {
 
   reduce(func, initialValue) {
     return new Stream(Stream.reduce(this, func, initialValue));
+  }
+
+  toArray() {
+    return Array.from(this);
+  }
+
+  toMap(keyFunc, valueFunc) {
+    const result = new Map();
+    for (elem of this) {
+       result.set(keyFunc(elem), valueFunc(elem));
+    }
+    return result;
+  }
+
+  toSet() {
+    return new Set(this);
   }
 }
 
