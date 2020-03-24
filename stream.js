@@ -3,7 +3,7 @@ class Stream {
 
   constructor(iterable) {
     this._srcIterable = iterable;
-    Object.freeze(this);
+    //Object.freeze(this);
   }
 
   *[Symbol.iterator]() {
@@ -44,8 +44,8 @@ class Stream {
 
   toMap(keyFunc, valueFunc) {
     const result = new Map();
-    for (elem of this) {
-       result.set(keyFunc(elem), valueFunc(elem));
+    for (const elem of this) {
+      result.set(keyFunc(elem), valueFunc(elem));
     }
     return result;
   }
@@ -55,9 +55,17 @@ class Stream {
   }
 }
 
+Stream.from = function (iterable) {
+  return new Stream(iterable);
+}
+
+Stream.fromElements = function (...elements) {
+  return new Stream(elements);
+}
+
 Stream.map = function* (iterable, func) {
   let index = 0;
-  for(element of iterable) {
+  for (const element of iterable) {
     yield func(element, index);
     index++;
   }
@@ -65,7 +73,7 @@ Stream.map = function* (iterable, func) {
 
 Stream.filter = function* (iterable, predicate) {
   let index = 0;
-  for (element of iterable) {
+  for (const element of iterable) {
     if (predicate(element, index)) {
       yield element;
     }
@@ -75,7 +83,7 @@ Stream.filter = function* (iterable, predicate) {
 
 Stream.flatMap = function* (iterable, func) {
   let index = 0;
-  for (element of iterable) {
+  for (const element of iterable) {
     yield* func(element, index);
     index++;
   }
@@ -83,7 +91,7 @@ Stream.flatMap = function* (iterable, func) {
 
 Stream.limit = function* (iterable, quantity) {
   let yieldedSoFar = 0;
-  for (element of iterable) {
+  for (const element of iterable) {
     yield element;
     yieldedSoFar++;
     if (yieldedSoFar === quantity) {
@@ -93,13 +101,13 @@ Stream.limit = function* (iterable, quantity) {
 }
 
 Stream.forEach = function (iterable, func) {
-  for (element of iterable) {
+  for (const element of iterable) {
     func(element);
   }
 }
 
 Stream.find = function (iterable, predicate) {
-  for (element of iterable) {
+  for (const element of iterable) {
     if (predicate(element)) {
       return element;
     }
@@ -114,7 +122,7 @@ Stream.reduce = function (iterable, func, initialValue) {
 
   let accumulator = initialValue ? func(initialValue, firstElement.value) : firstElement.value;
   let index = initialValue ? 0 : 1;
-  for (element of iterable) {
+  for (const element of iterable) {
     accumulator = func(accumulator, element, index);
     index++;
   }
