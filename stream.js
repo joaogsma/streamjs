@@ -3,7 +3,6 @@ class Stream {
 
   constructor(iterable) {
     this._srcIterable = iterable;
-    //Object.freeze(this);
   }
 
   *[Symbol.iterator]() {
@@ -11,31 +10,48 @@ class Stream {
   }
 
   map(func) {
-    return new Stream(Stream.map(this, func));
+    return new MapStream(this, func);
   }
 
   filter(predicate) {
-    return new Stream(Stream.filter(this, predicate));
+    return new FilterStream(this, predicate);
   }
 
   flatMap(func) {
-    return new Stream(Stream.flatMap(this, func));
+    return new FlatMapStream(this, func);
   }
 
   limit(quantity) {
-    return new Stream(Stream.limit(this, quantity));
+    return new LimitStream(this, quantity);
   }
 
   forEach(func) {
-    Stream.forEach(this, func);
+    for (const element of this) {
+      func(element);
+    }
   }
 
   find(predicate) {
-    return Stream.find(this, predicate);
+    for (const element of this) {
+      if (predicate(element)) {
+        return element;
+      }
+    }
   }
 
   reduce(func, initialValue) {
-    return Stream.reduce(this, func, initialValue);
+    const iterator = this[Symbol.iterator];
+    const firstElement = iterator.next();
+    if (firstElement.done) {
+      return { done: true };
+    }
+
+    let accumulator = initialValue ? func(initialValue, firstElement.value) : firstElement.value;
+    let index = initialValue ? 0 : 1;
+    for (const element of iterator) {
+      accumulator = func(accumulator, element, index++);
+    }
+    return accumulator;
   }
 
   toArray() {
@@ -55,78 +71,78 @@ class Stream {
   }
 }
 
-Stream.from = function (iterable) {
-  return new Stream(iterable);
+class MapStream extends Stream {
+  mapFunc;
+
+  constructor(iterable, mapFunc) {
+    super(iterable);
+    this.mapFunc = mapFunc;
+  }
+
+  *[Symbol.iterator]() {
+    let index = 0;
+    for (const element of this._srcIterable) {
+      yield this.mapFunc(element, index++);
+    }
+  }
+}
+
+class FilterStream extends Stream {
+  predicate;
+
+  constructor(iterable, predicate) {
+    super(iterable);
+    this.predicate = predicate;
+  }
+
+  *[Symbol.iterator]() {
+    let index = 0;
+    for (const element of this._srcIterable) {
+      if (this.predicate(element, index++)) {
+        yield element;
+      }
+    }
+  }
+}
+
+class FlatMapStream extends Stream {
+  flatMapFunc;
+
+  constructor(iterable, flatMapFunc) {
+    super(iterable);
+    this.flatMapFunc = flatMapFunc;
+  }
+
+  *[Symbol.iterator]() {
+    let index = 0;
+    for (const element of this._srcIterable) {
+      yield* this.flatMapFunc(element, index++);
+    }
+  }
+}
+
+class LimitStream extends Stream {
+  quantity;
+
+  constructor(iterable, quantity) {
+    super(iterable);
+    this.quantity = quantity;
+  }
+
+  *[Symbol.iterator]() {
+    let yieldedSoFar = 0;
+    for (const element of this._srcIterable) {
+      yield element;
+      yieldedSoFar++;
+      if (yieldedSoFar === this.quantity) {
+        break;
+      }
+    }
+  }
 }
 
 Stream.fromElements = function (...elements) {
   return new Stream(elements);
-}
-
-Stream.map = function* (iterable, func) {
-  let index = 0;
-  for (const element of iterable) {
-    yield func(element, index);
-    index++;
-  }
-}
-
-Stream.filter = function* (iterable, predicate) {
-  let index = 0;
-  for (const element of iterable) {
-    if (predicate(element, index)) {
-      yield element;
-    }
-    index++;
-  }
-}
-
-Stream.flatMap = function* (iterable, func) {
-  let index = 0;
-  for (const element of iterable) {
-    yield* func(element, index);
-    index++;
-  }
-}
-
-Stream.limit = function* (iterable, quantity) {
-  let yieldedSoFar = 0;
-  for (const element of iterable) {
-    yield element;
-    yieldedSoFar++;
-    if (yieldedSoFar === quantity) {
-      break;
-    }
-  }
-}
-
-Stream.forEach = function (iterable, func) {
-  for (const element of iterable) {
-    func(element);
-  }
-}
-
-Stream.find = function (iterable, predicate) {
-  for (const element of iterable) {
-    if (predicate(element)) {
-      return element;
-    }
-  }
-}
-
-Stream.reduce = function (iterable, func, initialValue) {
-  const firstElement = iterable.next();
-  if (firstElement.done) {
-    return { done: true };
-  }
-
-  let accumulator = initialValue ? func(initialValue, firstElement.value) : firstElement.value;
-  let index = initialValue ? 0 : 1;
-  for (const element of iterable) {
-    accumulator = func(accumulator, element, index);
-    index++;
-  }
-  return accumulator;
 }
 
 module.exports = Stream;
