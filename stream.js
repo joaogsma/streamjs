@@ -27,15 +27,15 @@ class Stream {
   }
 
   forEach(func) {
-    return new Stream(Stream.forEach(this, func));
+    Stream.forEach(this, func);
   }
 
   find(predicate) {
-    return new Stream(Stream.find(this, predicate));
+    return Stream.find(this, predicate);
   }
 
   reduce(func, initialValue) {
-    return new Stream(Stream.reduce(this, func, initialValue));
+    return Stream.reduce(this, func, initialValue);
   }
 
   toArray() {
