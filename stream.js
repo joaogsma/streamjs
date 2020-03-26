@@ -12,22 +12,6 @@ class Stream {
     yield* this._srcIterable;
   }
 
-  map(func) {
-    return new MapStream(this, func);
-  }
-
-  filter(predicate) {
-    return new FilterStream(this, predicate);
-  }
-
-  flatMap(func) {
-    return new FlatMapStream(this, func);
-  }
-
-  limit(quantity) {
-    return new LimitStream(this, quantity);
-  }
-
   forEach(func) {
     for (const element of this) {
       func(element);
@@ -74,78 +58,31 @@ class Stream {
   }
 }
 
-class MapStream extends Stream {
-  mapFunc;
-
-  constructor(iterable, mapFunc) {
-    super(iterable);
-    this.mapFunc = mapFunc;
-  }
-
-  *[Symbol.iterator]() {
-    let index = 0;
-    for (const element of this._srcIterable) {
-      yield this.mapFunc(element, index++);
-    }
-  }
-}
-
-class FilterStream extends Stream {
-  predicate;
-
-  constructor(iterable, predicate) {
-    super(iterable);
-    this.predicate = predicate;
-  }
-
-  *[Symbol.iterator]() {
-    let index = 0;
-    for (const element of this._srcIterable) {
-      if (this.predicate(element, index++)) {
-        yield element;
-      }
-    }
-  }
-}
-
-class FlatMapStream extends Stream {
-  flatMapFunc;
-
-  constructor(iterable, flatMapFunc) {
-    super(iterable);
-    this.flatMapFunc = flatMapFunc;
-  }
-
-  *[Symbol.iterator]() {
-    let index = 0;
-    for (const element of this._srcIterable) {
-      yield* this.flatMapFunc(element, index++);
-    }
-  }
-}
-
-class LimitStream extends Stream {
-  quantity;
-
-  constructor(iterable, quantity) {
-    super(iterable);
-    this.quantity = quantity;
-  }
-
-  *[Symbol.iterator]() {
-    let yieldedSoFar = 0;
-    for (const element of this._srcIterable) {
-      yield element;
-      yieldedSoFar++;
-      if (yieldedSoFar === this.quantity) {
-        break;
-      }
-    }
-  }
-}
-
 Stream.fromElements = function (...elements) {
   return new Stream(elements);
 }
 
 module.exports = Stream;
+
+// In order to avoid circular dependencies, the following requires and methods need to be placed
+// after the Stream class is defined and exported.
+const MapStream = require("./map-stream");
+const FilterStream = require("./filter-stream");
+const FlatMapStream = require("./flat-map-stream");
+const LimitStream = require("./limit-stream");
+
+Stream.prototype.map = function (func) {
+  return new MapStream(this, func);
+}
+
+Stream.prototype.filter = function (predicate) {
+  return new FilterStream(this, predicate);
+}
+
+Stream.prototype.flatMap = function (func) {
+  return new FlatMapStream(this, func);
+}
+
+Stream.prototype.limit = function (quantity) {
+  return new LimitStream(this, quantity);
+}
