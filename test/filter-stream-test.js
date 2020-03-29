@@ -24,6 +24,6 @@ describe("A FilterStream", () => {
 
   it("should return an empty iterator when given an empty iterable", () => {
     const stream = new FilterStream([], v => true);
-    expect([...stream]).to.deep.equals([]);
+    expect([...stream]).to.be.empty;
   });
 });

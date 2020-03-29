@@ -31,6 +31,6 @@ describe("A FlatMapStream", () => {
 
   it("should return an empty iterator when given an empty iterable", () => {
     const stream = new FlatMapStream([], x => [-x, x]);
-    expect([...stream]).to.deep.equals([]);
+    expect([...stream]).to.be.empty;
   });
 });

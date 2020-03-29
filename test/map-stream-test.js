@@ -20,6 +20,6 @@ describe("A MapStream", () => {
 
   it("should return an empty iterator when given an empty iterable", () => {
     const stream = new MapStream([], x => x);
-    expect([...stream]).to.deep.equals([]);
+    expect([...stream]).to.be.empty;
   });
 });
