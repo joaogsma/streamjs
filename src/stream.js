@@ -13,28 +13,33 @@ class Stream {
   }
 
   forEach(func) {
+    let index = 0;
     for (const element of this) {
-      func(element);
+      func(element, index++);
     }
   }
 
   find(predicate) {
+    let index = 0;
     for (const element of this) {
-      if (predicate(element)) {
+      if (predicate(element, index++)) {
         return element;
       }
     }
   }
 
   reduce(func, initialValue) {
-    const iterator = this[Symbol.iterator];
+    const iterator = this[Symbol.iterator]();
     const firstElement = iterator.next();
+    if (firstElement.done && !initialValue) {
+      throw new TypeError("Reduce of empty stream with no initial value");
+    }
     if (firstElement.done) {
-      return { done: true };
+      return initialValue;
     }
 
-    let accumulator = initialValue ? func(initialValue, firstElement.value) : firstElement.value;
     let index = initialValue ? 0 : 1;
+    let accumulator = initialValue ? func(initialValue, firstElement.value, index++) : firstElement.value;
     for (const element of iterator) {
       accumulator = func(accumulator, element, index++);
     }

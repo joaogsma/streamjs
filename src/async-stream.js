@@ -13,14 +13,16 @@ class AsyncStream {
   }
 
   async forEach(func) {
+    let index = 0;
     for await (const element of this) {
-      func(element);
+      func(element, index++);
     }
   }
 
   async find(predicate) {
+    let index = 0;
     for await (const element of this) {
-      if (predicate(element)) {
+      if (predicate(element, index++)) {
         return element;
       }
     }
@@ -29,12 +31,15 @@ class AsyncStream {
   async reduce(func, initialValue) {
     const iterator = this[Symbol.asyncIterator];
     const firstElement = await iterator.next();
+    if (firstElement.done && !initialValue) {
+      throw new TypeError("Reduce of empty stream with no initial value");
+    }
     if (firstElement.done) {
-      return { done: true };
+      return initialValue;
     }
 
-    let accumulator = initialValue ? func(initialValue, firstElement.value) : firstElement.value;
     let index = initialValue ? 0 : 1;
+    let accumulator = initialValue ? func(initialValue, firstElement.value, index) : firstElement.value;
     for await (const element of iterator) {
       accumulator = func(accumulator, element, index++);
     }
