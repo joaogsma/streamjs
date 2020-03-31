@@ -1,10 +1,28 @@
 {
-  "scripts": {
-    "test": "mocha"
-  },
   "dependencies": {
     "chai": "^4.2.0",
     "mocha": "^7.1.1",
     "sinon": "^9.0.1"
+  },
+  "name": "streamjs",
+  "version": "0.1.0",
+  "description": "Lazy, iterator-based data structures for working with collections in NodeJS. Based on Java's Stream.",
+  "main": "./src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaogsma/streamjs.git"
+  },
+  "author": "João Gabriel Abreu <joaogsma@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joaogsma/streamjs/issues"
+  },
+  "homepage": "https://github.com/joaogsma/streamjs#readme",
+  "scripts": {
+    "test": "mocha"
   }
 }
