@@ -1,2 +1,5 @@
-module.exports.Stream = require("./stream");
-module.exports.AsyncStream = require("./async-stream");
+const { Stream } = require("./stream");
+const { AsyncStream } = require("./async-stream");
+
+module.exports.Stream = Stream;
+module.exports.AsyncStream = AsyncStream;
