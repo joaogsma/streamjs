@@ -1,6 +1,6 @@
-const { Stream } = require("./stream");
+import { Stream } from "./internal.js";
 
-module.exports.LimitStream = class LimitStream extends Stream {
+export class LimitStream extends Stream {
   quantity;
 
   constructor(iterable, quantity) {

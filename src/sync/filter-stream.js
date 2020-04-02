@@ -1,6 +1,6 @@
-const { Stream } = require("./stream");
+import { Stream } from "./internal.js";
 
-module.exports.FilterStream = class FilterStream extends Stream {
+export class FilterStream extends Stream {
   predicate;
 
   constructor(iterable, predicate) {

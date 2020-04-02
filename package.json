@@ -8,6 +8,8 @@
   "version": "0.1.0",
   "description": "Lazy, iterator-based data structures for working with collections in NodeJS. Based on Java's Stream.",
   "main": "./src/index.js",
+  "exports": "./src/index.js",
+  "type": "module",
   "directories": {
     "test": "test"
   },
@@ -16,7 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/joaogsma/streamjs.git"
   },
-  "author": "João Gabriel Abreu <joaogsma@gmail.com>",
+  "author": "João Gabriel Abreu <joaogsma@gmail.com> (https://github.com/joaogsma)",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/joaogsma/streamjs/issues"
