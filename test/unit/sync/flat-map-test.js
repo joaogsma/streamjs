@@ -1,7 +1,7 @@
-const sinon = require("sinon");
-const { expect } = require("chai");
+import sinon from "sinon";
+import chai from "chai";
 
-const { FlatMapStream } = require("../../../src/sync/flat-map-stream.js");
+import { FlatMapStream } from "../../../src/sync/internal.js";
 
 describe("FlatMapStream Unit Tests", () => {
   describe("The iterator function", () => {
@@ -9,7 +9,7 @@ describe("FlatMapStream Unit Tests", () => {
 
     it("should return an iterator", () => {
       const stream = new FlatMapStream(VALUES, x => [-x, x]);
-      expect(stream).to.have.property(Symbol.iterator);
+      chai.expect(stream).to.have.property(Symbol.iterator);
     });
 
     it("when iterated on, should return the flat mapped elements", () => {
@@ -18,20 +18,20 @@ describe("FlatMapStream Unit Tests", () => {
 
       const stream = new FlatMapStream(VALUES, func);
       const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
-      expect([...stream]).to.deep.equal(expected);
-      VALUES.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
+      chai.expect([...stream]).to.deep.equal(expected);
+      VALUES.forEach(value => chai.expect(func.withArgs(value).calledOnce).to.be.true);
     });
 
     it("when the input function returns an iterator, should return the flat mapped elements", () => {
       const func = v => [-v, v][Symbol.iterator]();
       const stream = new FlatMapStream(VALUES, func);
       const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
-      expect([...stream]).to.deep.equal(expected);
+      chai.expect([...stream]).to.deep.equal(expected);
     });
 
     it("when the backing iterable is empty, should return an empty iterator", () => {
       const stream = new FlatMapStream([], x => [-x, x]);
-      expect([...stream]).to.be.empty;
+      chai.expect([...stream]).to.be.empty;
     });
   });
 });

@@ -1,4 +1,4 @@
-class Stream {
+export class Stream {
   _srcIterable;
 
   constructor(iterable) {
@@ -75,27 +75,22 @@ Stream.fromElements = function (...elements) {
   return new Stream(elements);
 }
 
-module.exports.Stream = Stream;
-
 // In order to avoid circular dependencies, the following requires and methods need to be placed
 // after the Stream class is defined and exported.
-const mapStream = require("./map-stream");
-const filterStream = require("./filter-stream");
-const flatMapStream = require("./flat-map-stream");
-const limitStream = require("./limit-stream");
+import { MapStream, FilterStream, FlatMapStream, LimitStream } from "./internal.js";
 
 Stream.prototype.map = function (func) {
-  return new mapStream.MapStream(this, func);
+  return new MapStream(this, func);
 }
 
 Stream.prototype.filter = function (predicate) {
-  return new filterStream.FilterStream(this, predicate);
+  return new FilterStream(this, predicate);
 }
 
 Stream.prototype.flatMap = function (func) {
-  return new flatMapStream.FlatMapStream(this, func);
+  return new FlatMapStream(this, func);
 }
 
 Stream.prototype.limit = function (quantity) {
-  return new limitStream.LimitStream(this, quantity);
+  return new LimitStream(this, quantity);
 }
