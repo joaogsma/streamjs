@@ -1,7 +1,7 @@
-const sinon = require("sinon");
-const { expect } = require("chai");
+import sinon from "sinon";
+import chai from "chai";
 
-const { MapStream } = require("../../../src/sync/map-stream.js");
+import { MapStream } from "../../../src/sync/internal.js";
 
 describe("MapStream Unit Tests", () => {
   describe("The iterator function", () => {
@@ -10,19 +10,19 @@ describe("MapStream Unit Tests", () => {
     it("should return an iterator", () => {
       const values = [1, 2, 3];
       const stream = new MapStream(values, x => x);
-      expect(stream).to.have.property(Symbol.iterator);
+      chai.expect(stream).to.have.property(Symbol.iterator);
     });
 
     it("when iterated on, should return the mapped elements", () => {
       const func = sinon.spy();
       const stream = new MapStream(VALUES, func);
       [...stream];
-      VALUES.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
+      VALUES.forEach(value => chai.expect(func.withArgs(value).calledOnce).to.be.true);
     });
 
     it("when the backing iterable is empty, should return an empty iterator", () => {
       const stream = new MapStream([], x => x);
-      expect([...stream]).to.be.empty;
+      chai.expect([...stream]).to.be.empty;
     });
   });
 });

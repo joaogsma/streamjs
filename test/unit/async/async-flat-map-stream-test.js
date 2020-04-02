@@ -1,8 +1,8 @@
-const sinon = require("sinon");
-const { expect } = require("chai");
+import sinon from "sinon";
+import chai from "chai";
 
-const { AsyncFlatMapStream } = require("../../../src/async/async-flat-map-stream.js");
-const { toArray } = require("../test-utils.js");
+import { AsyncFlatMapStream } from "../../../src/async/internal.js";
+import { toArray } from "../test-utils.js";
 
 describe("AsyncFlatMapStream Unit Tests", () => {
   describe("The async iterator function", () => {
@@ -10,7 +10,7 @@ describe("AsyncFlatMapStream Unit Tests", () => {
 
     it("should return an async iterator", () => {
       const stream = new AsyncFlatMapStream(VALUES, x => [-x, x]);
-      expect(stream).to.have.property(Symbol.asyncIterator);
+      chai.expect(stream).to.have.property(Symbol.asyncIterator);
     });
 
     it("when iterated on, should return the flat mapped elements", async () => {
@@ -19,20 +19,20 @@ describe("AsyncFlatMapStream Unit Tests", () => {
 
       const stream = new AsyncFlatMapStream(VALUES, func);
       const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
-      expect(await toArray(stream)).to.deep.equal(expected);
-      VALUES.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
+      chai.expect(await toArray(stream)).to.deep.equal(expected);
+      VALUES.forEach(value => chai.expect(func.withArgs(value).calledOnce).to.be.true);
     });
 
     it("when the input function returns an iterator, should return the flat mapped elements", async () => {
       const func = v => [-v, v][Symbol.iterator]();
       const stream = new AsyncFlatMapStream(VALUES, func);
       const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
-      expect(await toArray(stream)).to.deep.equal(expected);
+      chai.expect(await toArray(stream)).to.deep.equal(expected);
     });
 
     it("when the backing iterable is empty, should return an empty async iterator", async () => {
       const stream = new AsyncFlatMapStream([], x => [-x, x]);
-      expect(await toArray(stream)).to.be.empty;
+      chai.expect(await toArray(stream)).to.be.empty;
     });
   });
 });

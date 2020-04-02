@@ -1,6 +1,6 @@
-const { AsyncStream } = require("./async-stream");
+import { AsyncStream } from "./internal.js";
 
-module.exports.AsyncFilterStream = class AsyncFilterStream extends AsyncStream {
+export class AsyncFilterStream extends AsyncStream {
   predicate;
 
   constructor(iterable, predicate) {

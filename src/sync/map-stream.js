@@ -1,6 +1,6 @@
-const { Stream } = require("./stream");
+import { Stream } from "./internal.js";
 
-module.exports.MapStream = class MapStream extends Stream {
+export class MapStream extends Stream {
   mapFunc;
 
   constructor(iterable, mapFunc) {
