@@ -1,7 +1,7 @@
 const sinon = require("sinon");
 const { expect } = require("chai");
 
-const { FlatMapStream } = require("../src/flat-map-stream");
+const { FlatMapStream } = require("../../../src/sync/flat-map-stream.js");
 
 describe("FlatMapStream Unit Tests", () => {
   describe("The iterator function", () => {

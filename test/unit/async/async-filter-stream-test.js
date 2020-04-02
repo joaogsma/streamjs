@@ -1,8 +1,8 @@
 const sinon = require("sinon");
 const { expect } = require("chai");
 
-const { AsyncFilterStream } = require("../src/async-filter-stream");
-const { toArray } = require("./test-utils");
+const { AsyncFilterStream } = require("../../../src/async/async-filter-stream.js");
+const { toArray } = require("../test-utils.js");
 
 describe("AsyncFilterStream Unit Tests", () => {
   describe("The async iterator function", () => {

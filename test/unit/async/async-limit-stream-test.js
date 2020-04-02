@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 
-const { AsyncLimitStream } = require("../src/async-limit-stream");
-const { toArray } = require("./test-utils");
+const { AsyncLimitStream } = require("../../../src/async/async-limit-stream.js");
+const { toArray } = require("../test-utils.js");
 
 describe("AsyncLimitStream Unit Tests", () => {
   it("when the quantity is less than zero, should throw on construction", () => {

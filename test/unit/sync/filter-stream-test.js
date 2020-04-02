@@ -1,7 +1,7 @@
 const sinon = require("sinon");
 const { expect } = require("chai");
 
-const { FilterStream } = require("../src/filter-stream");
+const { FilterStream } = require("../../../src/sync/filter-stream.js");
 
 describe("FilterStream Unit Tests", () => {
   describe("The iterator function", () => {

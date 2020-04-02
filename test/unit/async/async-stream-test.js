@@ -1,12 +1,12 @@
 const sinon = require("sinon");
 const { expect } = require("chai");
 
-const { AsyncStream } = require("../src/async-stream");
-const { AsyncMapStream } = require("../src/async-map-stream");
-const { AsyncFilterStream } = require("../src/async-filter-stream");
-const { AsyncFlatMapStream } = require("../src/async-flat-map-stream");
-const { AsyncLimitStream } = require("../src/async-limit-stream");
-const { toArray } = require("./test-utils");
+const { AsyncStream } = require("../../../src/async/async-stream.js");
+const { AsyncMapStream } = require("../../../src/async/async-map-stream.js");
+const { AsyncFilterStream } = require("../../../src/async/async-filter-stream.js");
+const { AsyncFlatMapStream } = require("../../../src/async/async-flat-map-stream.js");
+const { AsyncLimitStream } = require("../../../src/async/async-limit-stream.js");
+const { toArray } = require("../test-utils.js");
 
 describe("AsyncStream Unit Tests", async () => {
   const VALUES = [1, 2, 3, 4, 5];

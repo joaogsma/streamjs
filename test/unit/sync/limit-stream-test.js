@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 
-const { LimitStream } = require("../src/limit-stream");
+const { LimitStream } = require("../../../src/sync/limit-stream.js");
 
 describe("LimitStream Unit Tests", () => {
   const VALUES = [1, 2, 3, 4, 5];

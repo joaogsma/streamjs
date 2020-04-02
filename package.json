@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/joaogsma/streamjs#readme",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha test/unit --recursive"
   }
 }

@@ -1,11 +1,11 @@
 const { expect } = require("chai");
 const sinon = require("sinon");
 
-const { Stream } = require("../src/stream");
-const { MapStream } = require("../src/map-stream");
-const { FilterStream } = require("../src/filter-stream");
-const { FlatMapStream } = require("../src/flat-map-stream");
-const { LimitStream } = require("../src/limit-stream");
+const { Stream } = require("../../../src/sync/stream.js");
+const { MapStream } = require("../../../src/sync/map-stream.js");
+const { FilterStream } = require("../../../src/sync/filter-stream.js");
+const { FlatMapStream } = require("../../../src/sync/flat-map-stream.js");
+const { LimitStream } = require("../../../src/sync/limit-stream.js");
 
 describe("Stream Unit Tests", () => {
   const VALUES = [1, 2, 3, 4, 5];

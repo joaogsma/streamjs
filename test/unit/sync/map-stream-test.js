@@ -1,7 +1,7 @@
 const sinon = require("sinon");
 const { expect } = require("chai");
 
-const { MapStream } = require("../src/map-stream");
+const { MapStream } = require("../../../src/sync/map-stream.js");
 
 describe("MapStream Unit Tests", () => {
   describe("The iterator function", () => {
