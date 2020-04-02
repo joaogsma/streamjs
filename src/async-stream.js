@@ -2,14 +2,14 @@ class AsyncStream {
   _srcIterable;
 
   constructor(iterable) {
-    if (!iterable[Symbol.asyncIterator] instanceof Function) {
+    if (!this._isIterable(iterable)) {
       throw new TypeError("Non-iterable object");
     }
     this._srcIterable = iterable;
   }
 
   async *[Symbol.asyncIterator]() {
-    yield* this._srcIterator;
+    yield* this._srcIterable;
   }
 
   async forEach(func) {
@@ -29,7 +29,7 @@ class AsyncStream {
   }
 
   async reduce(func, initialValue) {
-    const iterator = this[Symbol.asyncIterator];
+    const iterator = this[Symbol.asyncIterator]();
     const firstElement = await iterator.next();
     if (firstElement.done && !initialValue) {
       throw new TypeError("Reduce of empty stream with no initial value");
@@ -39,7 +39,9 @@ class AsyncStream {
     }
 
     let index = initialValue ? 0 : 1;
-    let accumulator = initialValue ? func(initialValue, firstElement.value, index) : firstElement.value;
+    let accumulator = initialValue
+      ? func(initialValue, firstElement.value, index++)
+      : firstElement.value;
     for await (const element of iterator) {
       accumulator = func(accumulator, element, index++);
     }
@@ -69,29 +71,46 @@ class AsyncStream {
     }
     return result;
   }
+
+  _isIterable(value) {
+    return value instanceof Object
+      && (this._isSyncIterable(value) || this._isAsyncIterable(value));
+  }
+
+  _isSyncIterable(value) {
+    return value[Symbol.iterator] && value[Symbol.iterator] instanceof Function;
+  }
+
+  _isAsyncIterable(value) {
+    return value[Symbol.asyncIterator] && value[Symbol.asyncIterator] instanceof Function;
+  }
 }
 
-module.exports = AsyncStream;
+AsyncStream.fromElements = function (...elements) {
+  return new AsyncStream(elements);
+}
+
+module.exports.AsyncStream = AsyncStream;
 
 // In order to avoid circular dependencies, the following requires and methods need to be placed
 // after the AsyncStream class is defined and exported.
-const AsyncMapStream = require("./async-map-stream");
-const AsyncFilterStream = require("./async-filter-stream");
-const AsyncFlatMapStream = require("./async-flat-map-stream");
-const AsyncLimitStream = require("./async-limit-stream");
+const asyncMapStream = require("./async-map-stream");
+const asyncFilterStream = require("./async-filter-stream");
+const asyncFlatMapStream = require("./async-flat-map-stream");
+const asyncLimitStream = require("./async-limit-stream");
 
 AsyncStream.prototype.map = function (func) {
-  return new AsyncMapStream(this, func);
+  return new asyncMapStream.AsyncMapStream(this, func);
 }
 
 AsyncStream.prototype.filter = function (predicate) {
-  return new AsyncFilterStream(this, func);
+  return new asyncFilterStream.AsyncFilterStream(this, predicate);
 }
 
 AsyncStream.prototype.flatMap = function (func) {
-  return new AsyncFlatMapStream(this, func);
+  return new asyncFlatMapStream.AsyncFlatMapStream(this, func);
 }
 
 AsyncStream.prototype.limit = function (quantity) {
-  return new AsyncLimitStream(this, quantity);
+  return new asyncLimitStream.AsyncLimitStream(this, quantity);
 }

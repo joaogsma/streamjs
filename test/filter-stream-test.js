@@ -1,29 +1,31 @@
-const Sinon = require("sinon");
+const sinon = require("sinon");
 const { expect } = require("chai");
 
-const FilterStream = require("../src/filter-stream");
+const { FilterStream } = require("../src/filter-stream");
 
-describe("A FilterStream", () => {
-  it("should return the filtered elements when iterated on", () => {
-    const values = [1, 2, 3, 4, 5];
-    const func = Sinon.stub();
-    func.withArgs(2).returns(false);
-    func.returns(true);
+describe("FilterStream Unit Tests", () => {
+  describe("The iterator function", () => {
+    const VALUES = [1, 2, 3, 4, 5];
 
-    const stream = new FilterStream(values, func);
-    const expected = [1, 3, 4, 5];
-    expect([...stream]).to.deep.equal(expected);
-    values.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
-  });
+    it("should return an iterator", () => {
+      const stream = new FilterStream(VALUES, v => true);
+      expect(stream).to.have.property(Symbol.iterator);
+    });
 
-  it("should return an iterator when iterated on", () => {
-    const values = [1, 2, 3];
-    const stream = new FilterStream(values, v => true);
-    expect(stream).to.have.property(Symbol.iterator);
-  });
+    it("when iterated on, should return the filtered elements", () => {
+      const func = sinon.stub();
+      func.withArgs(2).returns(false);
+      func.returns(true);
 
-  it("should return an empty iterator when given an empty iterable", () => {
-    const stream = new FilterStream([], v => true);
-    expect([...stream]).to.be.empty;
+      const stream = new FilterStream(VALUES, func);
+      const expected = [1, 3, 4, 5];
+      expect([...stream]).to.deep.equal(expected);
+      VALUES.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
+    });
+
+    it("when the backing iterable is empty, should return an empty iterator", () => {
+      const stream = new FilterStream([], v => true);
+      expect([...stream]).to.be.empty;
+    });
   });
 });

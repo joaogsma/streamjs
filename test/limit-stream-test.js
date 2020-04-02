@@ -1,28 +1,30 @@
 const { expect } = require("chai");
 
-const LimitStream = require("../src/limit-stream");
+const { LimitStream } = require("../src/limit-stream");
 
-describe("A LimitStream", () => {
-  it("should return the elements when iterated on", () => {
-    const values = [1, 2, 3, 4, 5];
-    const stream = new LimitStream(values, 3);
-    const expected = [1, 2, 3];
-    expect([...stream]).to.deep.equal(expected);
+describe("LimitStream Unit Tests", () => {
+  const VALUES = [1, 2, 3, 4, 5];
+  it("when the quantity is less than zero, should throw on construction", () => {
+    expect(() => new LimitStream(VALUES, -2)).to.throw(RangeError);
   });
 
-  it("should throw when the quantity is less than zero", () => {
-    const values = [1, 2, 3, 4, 5];
-    expect(() => new LimitStream(values, -2)).to.throw(RangeError);
-  });
+  describe("The iterator function", () => {
+    it("should return an iterator", () => {
+      const values = [1, 2, 3];
+      const stream = new LimitStream(values, 3);
+      expect(stream).to.have.property(Symbol.iterator);
+    });
 
-  it("should return an iterator when iterated on", () => {
-    const values = [1, 2, 3];
-    const stream = new LimitStream(values, 3);
-    expect(stream).to.have.property(Symbol.iterator);
-  });
+    it("when iterated on, should return the elements", () => {
+      const values = [1, 2, 3, 4, 5];
+      const stream = new LimitStream(values, 3);
+      const expected = [1, 2, 3];
+      expect([...stream]).to.deep.equal(expected);
+    });
 
-  it("should return an empty iterator when given an empty iterable", () => {
-    const stream = new LimitStream([], 3);
-    expect([...stream]).to.be.empty;
+    it("when the backing iterable is empty, should return an empty iterator", () => {
+      const stream = new LimitStream([], 3);
+      expect([...stream]).to.be.empty;
+    });
   });
 });

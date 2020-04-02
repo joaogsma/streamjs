@@ -1,6 +1,6 @@
-const AsyncStream = require("./async-stream");
+const { AsyncStream } = require("./async-stream");
 
-module.exports = class AsyncMapStream extends AsyncStream {
+module.exports.AsyncMapStream = class AsyncMapStream extends AsyncStream {
   mapFunc;
 
   constructor(iterable, mapFunc) {

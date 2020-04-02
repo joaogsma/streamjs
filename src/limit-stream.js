@@ -1,6 +1,6 @@
-const Stream = require("./stream");
+const { Stream } = require("./stream");
 
-module.exports = class LimitStream extends Stream {
+module.exports.LimitStream = class LimitStream extends Stream {
   quantity;
 
   constructor(iterable, quantity) {

@@ -1,37 +1,38 @@
-const Sinon = require("sinon");
+const sinon = require("sinon");
 const { expect } = require("chai");
 
-const AsyncFlatMapStream = require("../src/async-flat-map-stream");
+const { AsyncFlatMapStream } = require("../src/async-flat-map-stream");
 const { toArray } = require("./test-utils");
 
-describe("A AsyncFlatMapStream", () => {
-  it("should return the flat mapped elements when iterated on", async () => {
-    const values = [1, 2, 3, 4, 5];
-    const func = Sinon.stub();
-    func.callsFake(x => [-x, x]);
+describe("AsyncFlatMapStream Unit Tests", () => {
+  describe("The async iterator function", () => {
+    const VALUES = [1, 2, 3, 4, 5];
 
-    const stream = new AsyncFlatMapStream(values, func);
-    const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
-    expect(await toArray(stream)).to.deep.equal(expected);
-    values.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
-  });
+    it("should return an async iterator", () => {
+      const stream = new AsyncFlatMapStream(VALUES, x => [-x, x]);
+      expect(stream).to.have.property(Symbol.asyncIterator);
+    });
 
-  it("should return the flat mapped elements when the input function returns an iterator", async () => {
-    const values = [1, 2, 3, 4, 5];
-    const func = v => [-v, v][Symbol.iterator]();
-    const stream = new AsyncFlatMapStream(values, func);
-    const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
-    expect(await toArray(stream)).to.deep.equal(expected);
-  });
+    it("when iterated on, should return the flat mapped elements", async () => {
+      const func = sinon.stub();
+      func.callsFake(x => [-x, x]);
 
-  it("should return an async iterator when iterated on", () => {
-    const values = [1, 2, 3];
-    const stream = new AsyncFlatMapStream(values, x => [-x, x]);
-    expect(stream).to.have.property(Symbol.asyncIterator);
-  });
+      const stream = new AsyncFlatMapStream(VALUES, func);
+      const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
+      expect(await toArray(stream)).to.deep.equal(expected);
+      VALUES.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
+    });
 
-  it("should return an empty async iterator when given an empty iterable", async () => {
-    const stream = new AsyncFlatMapStream([], x => [-x, x]);
-    expect(await toArray(stream)).to.be.empty;
+    it("when the input function returns an iterator, should return the flat mapped elements", async () => {
+      const func = v => [-v, v][Symbol.iterator]();
+      const stream = new AsyncFlatMapStream(VALUES, func);
+      const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
+      expect(await toArray(stream)).to.deep.equal(expected);
+    });
+
+    it("when the backing iterable is empty, should return an empty async iterator", async () => {
+      const stream = new AsyncFlatMapStream([], x => [-x, x]);
+      expect(await toArray(stream)).to.be.empty;
+    });
   });
 });

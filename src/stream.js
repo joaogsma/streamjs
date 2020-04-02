@@ -2,7 +2,7 @@ class Stream {
   _srcIterable;
 
   constructor(iterable) {
-    if (!iterable[Symbol.iterator] instanceof Function) {
+    if (!this._isIterable(iterable)) {
       throw new TypeError("Non-iterable object");
     }
     this._srcIterable = iterable;
@@ -39,7 +39,9 @@ class Stream {
     }
 
     let index = initialValue ? 0 : 1;
-    let accumulator = initialValue ? func(initialValue, firstElement.value, index++) : firstElement.value;
+    let accumulator = initialValue
+      ? func(initialValue, firstElement.value, index++)
+      : firstElement.value;
     for (const element of iterator) {
       accumulator = func(accumulator, element, index++);
     }
@@ -61,33 +63,39 @@ class Stream {
   toSet() {
     return new Set(this);
   }
+
+  _isIterable(value) {
+    return value instanceof Object
+      && value[Symbol.iterator]
+      && value[Symbol.iterator] instanceof Function;
+  }
 }
 
 Stream.fromElements = function (...elements) {
   return new Stream(elements);
 }
 
-module.exports = Stream;
+module.exports.Stream = Stream;
 
 // In order to avoid circular dependencies, the following requires and methods need to be placed
 // after the Stream class is defined and exported.
-const MapStream = require("./map-stream");
-const FilterStream = require("./filter-stream");
-const FlatMapStream = require("./flat-map-stream");
-const LimitStream = require("./limit-stream");
+const mapStream = require("./map-stream");
+const filterStream = require("./filter-stream");
+const flatMapStream = require("./flat-map-stream");
+const limitStream = require("./limit-stream");
 
 Stream.prototype.map = function (func) {
-  return new MapStream(this, func);
+  return new mapStream.MapStream(this, func);
 }
 
 Stream.prototype.filter = function (predicate) {
-  return new FilterStream(this, predicate);
+  return new filterStream.FilterStream(this, predicate);
 }
 
 Stream.prototype.flatMap = function (func) {
-  return new FlatMapStream(this, func);
+  return new flatMapStream.FlatMapStream(this, func);
 }
 
 Stream.prototype.limit = function (quantity) {
-  return new LimitStream(this, quantity);
+  return new limitStream.LimitStream(this, quantity);
 }

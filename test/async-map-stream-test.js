@@ -1,26 +1,28 @@
-const Sinon = require("sinon");
+const sinon = require("sinon");
 const { expect } = require("chai");
 
-const AsyncMapStream = require("../src/async-map-stream");
+const { AsyncMapStream } = require("../src/async-map-stream");
 const { toArray } = require("./test-utils");
 
-describe("An AsyncMapStream", () => {
-  it("should return the mapped elements when iterated on", async () => {
-    const values = [1, 2, 3, 4, 5];
-    const func = Sinon.spy();
-    const stream = new AsyncMapStream(values, func);
-    await toArray(stream);
-    values.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
-  });
+describe("AsyncMapStream Unit Tests", () => {
+  describe("The async iterator function", () => {
+    const VALUES = [1, 2, 3, 4, 5];
 
-  it("should return an async iterator when iterated on", () => {
-    const values = [1, 2, 3];
-    const stream = new AsyncMapStream(values, x => x);
-    expect(stream).to.have.property(Symbol.asyncIterator);
-  });
+    it("should return an async iterator", () => {
+      const stream = new AsyncMapStream(VALUES, x => x);
+      expect(stream).to.have.property(Symbol.asyncIterator);
+    });
 
-  it("should return an empty async iterator when given an empty iterable", async () => {
-    const stream = new AsyncMapStream([], x => x);
-    expect(await toArray(stream)).to.be.empty;
+    it("when iterated on, should return the mapped elements", async () => {
+      const func = sinon.spy();
+      const stream = new AsyncMapStream(VALUES, func);
+      await toArray(stream);
+      VALUES.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
+    });
+
+    it("when the backing iterable is empty, should return an empty async iterator", async () => {
+      const stream = new AsyncMapStream([], x => x);
+      expect(await toArray(stream)).to.be.empty;
+    });
   });
 });

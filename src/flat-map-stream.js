@@ -1,6 +1,6 @@
-const Stream = require("./stream");
+const { Stream } = require("./stream");
 
-module.exports = class FlatMapStream extends Stream {
+module.exports.FlatMapStream = class FlatMapStream extends Stream {
   flatMapFunc;
 
   constructor(iterable, flatMapFunc) {

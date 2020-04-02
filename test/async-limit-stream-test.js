@@ -1,29 +1,31 @@
 const { expect } = require("chai");
 
-const AsyncLimitStream = require("../src/async-limit-stream");
+const { AsyncLimitStream } = require("../src/async-limit-stream");
 const { toArray } = require("./test-utils");
 
-describe("A AsyncLimitStream", () => {
-  it("should return the elements when iterated on", async () => {
-    const values = [1, 2, 3, 4, 5];
-    const stream = new AsyncLimitStream(values, 3);
-    const expected = [1, 2, 3];
-    expect(await toArray(stream)).to.deep.equal(expected);
-  });
-
-  it("should throw when the quantity is less than zero", () => {
+describe("AsyncLimitStream Unit Tests", () => {
+  it("when the quantity is less than zero, should throw on construction", () => {
     const values = [1, 2, 3, 4, 5];
     expect(() => new AsyncLimitStream(values, -2)).to.throw(RangeError);
   });
 
-  it("should return an async iterator when iterated on", () => {
-    const values = [1, 2, 3];
-    const stream = new AsyncLimitStream(values, 3);
-    expect(stream).to.have.property(Symbol.asyncIterator);
-  });
+  describe("The async iterator function", () => {
+    const VALUES = [1, 2, 3, 4, 5];
 
-  it("should return an empty async iterator when given an empty iterable", async () => {
-    const stream = new AsyncLimitStream([], 3);
-    expect(await toArray(stream)).to.be.empty;
+    it("should return an async iterator", () => {
+      const stream = new AsyncLimitStream(VALUES, 3);
+      expect(stream).to.have.property(Symbol.asyncIterator);
+    });
+
+    it("when iterated on, should return the elements", async () => {
+      const stream = new AsyncLimitStream(VALUES, 3);
+      const expected = [1, 2, 3];
+      expect(await toArray(stream)).to.deep.equal(expected);
+    });
+
+    it("when the backing iterable is empty, should return an empty async iterator", async () => {
+      const stream = new AsyncLimitStream([], 3);
+      expect(await toArray(stream)).to.be.empty;
+    });
   });
 });

@@ -1,6 +1,6 @@
-const Stream = require("./stream");
+const { Stream } = require("./stream");
 
-module.exports = class FilterStream extends Stream {
+module.exports.FilterStream = class FilterStream extends Stream {
   predicate;
 
   constructor(iterable, predicate) {

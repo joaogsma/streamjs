@@ -1,6 +1,6 @@
-const AsyncStream = require("./async-stream");
+const { AsyncStream } = require("./async-stream");
 
-module.exports = class AsyncFilterStream extends AsyncStream {
+module.exports.AsyncFilterStream = class AsyncFilterStream extends AsyncStream {
   predicate;
 
   constructor(iterable, predicate) {

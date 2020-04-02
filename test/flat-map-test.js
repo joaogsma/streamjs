@@ -1,36 +1,37 @@
-const Sinon = require("sinon");
+const sinon = require("sinon");
 const { expect } = require("chai");
 
-const FlatMapStream = require("../src/flat-map-stream");
+const { FlatMapStream } = require("../src/flat-map-stream");
 
-describe("A FlatMapStream", () => {
-  it("should return the flat mapped elements when iterated on", () => {
-    const values = [1, 2, 3, 4, 5];
-    const func = Sinon.stub();
-    func.callsFake(x => [-x, x]);
+describe("FlatMapStream Unit Tests", () => {
+  describe("The iterator function", () => {
+    const VALUES = [1, 2, 3, 4, 5];
 
-    const stream = new FlatMapStream(values, func);
-    const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
-    expect([...stream]).to.deep.equal(expected);
-    values.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
-  });
+    it("should return an iterator", () => {
+      const stream = new FlatMapStream(VALUES, x => [-x, x]);
+      expect(stream).to.have.property(Symbol.iterator);
+    });
 
-  it("should return the flat mapped elements when the input function returns an iterator", () => {
-    const values = [1, 2, 3, 4, 5];
-    const func = v => [-v, v][Symbol.iterator]();
-    const stream = new FlatMapStream(values, func);
-    const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
-    expect([...stream]).to.deep.equal(expected);
-  });
+    it("when iterated on, should return the flat mapped elements", () => {
+      const func = sinon.stub();
+      func.callsFake(x => [-x, x]);
 
-  it("should return an iterator when iterated on", () => {
-    const values = [1, 2, 3];
-    const stream = new FlatMapStream(values, x => [-x, x]);
-    expect(stream).to.have.property(Symbol.iterator);
-  });
+      const stream = new FlatMapStream(VALUES, func);
+      const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
+      expect([...stream]).to.deep.equal(expected);
+      VALUES.forEach(value => expect(func.withArgs(value).calledOnce).to.be.true);
+    });
 
-  it("should return an empty iterator when given an empty iterable", () => {
-    const stream = new FlatMapStream([], x => [-x, x]);
-    expect([...stream]).to.be.empty;
+    it("when the input function returns an iterator, should return the flat mapped elements", () => {
+      const func = v => [-v, v][Symbol.iterator]();
+      const stream = new FlatMapStream(VALUES, func);
+      const expected = [-1, 1, -2, 2, -3, 3, -4, 4, -5, 5];
+      expect([...stream]).to.deep.equal(expected);
+    });
+
+    it("when the backing iterable is empty, should return an empty iterator", () => {
+      const stream = new FlatMapStream([], x => [-x, x]);
+      expect([...stream]).to.be.empty;
+    });
   });
 });

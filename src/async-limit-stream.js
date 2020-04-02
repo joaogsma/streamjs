@@ -1,6 +1,6 @@
-const AsyncStream = require("./async-stream");
+const { AsyncStream } = require("./async-stream");
 
-module.exports = class AsyncLimitStream extends AsyncStream {
+module.exports.AsyncLimitStream = class AsyncLimitStream extends AsyncStream {
   quantity;
 
   constructor(iterable, quantity) {

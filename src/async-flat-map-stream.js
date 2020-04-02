@@ -1,6 +1,6 @@
-const AsyncStream = require("./async-stream");
+const { AsyncStream } = require("./async-stream");
 
-module.exports = class AsyncFlatMapStream extends AsyncStream {
+module.exports.AsyncFlatMapStream = class AsyncFlatMapStream extends AsyncStream {
   flatMapFunc;
 
   constructor(iterable, flatMapFunc) {
