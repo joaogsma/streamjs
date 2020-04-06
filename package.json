@@ -5,7 +5,7 @@
     "sinon": "^9.0.1"
   },
   "name": "streamjs",
-  "version": "0.1.0",
+  "version": "1.1.1",
   "description": "Lazy, iterator-based data structures for working with collections in NodeJS. Based on Java's Stream.",
   "main": "./src/index.js",
   "exports": "./src/index.js",
